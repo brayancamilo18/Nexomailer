@@ -202,8 +202,20 @@ Los tres servicios construyen la misma imagen (`Dockerfile` con PHP 8.3-cli) y m
 | **queue** | `queue:work --queue=default` con reinicio (`--max-jobs` / `--memory`). |
 | **queue-scraping** + **queue-scraping-2** | Dos workers de cola `scraping` (límites CPU/RAM). |
 | **mailpit** | SMTP local (puerto **1025**) + UI web en **[http://localhost:8025](http://localhost:8025)**. Captura correos en desarrollo sin usar Hostinger. |
+| **db-ui** | **Adminer** (sustituto de phpMyAdmin para SQLite) en **[http://localhost:8089](http://localhost:8089)**. |
 
 Para usar Mailpit, en `.env` apunta el mailer a `MAIL_HOST=mailpit` y `MAIL_PORT=1025` (ver bloque comentado en `.env.example`). En producción deja la config de Hostinger.
+
+### Ver tablas SQLite (Adminer)
+
+phpMyAdmin **no** funciona con SQLite. Adminer (`db-ui`) sí:
+
+1. Abre [http://localhost:8089](http://localhost:8089) (en el servidor: `http://IP:8089`).
+2. Sistema: **SQLite 3**.
+3. Base de datos: `/db/database.sqlite`.
+4. Usuario y contraseña: déjalos vacíos → Entrar.
+
+Verás `leads`, `harvest_areas`, `jobs`, `suppressions`, etc. Si el puerto 8089 no está abierto en el firewall del VPS, añádelo (`ufw allow 8089/tcp`).
 
 ---
 
@@ -437,6 +449,6 @@ resources/views/        layout, dashboard, emails/
 routes/
   web.php               Panel
   console.php           Schedule
-docker-compose.yml      app, scheduler, queue, queue-scraping(+-2), mailpit
+docker-compose.yml      app, scheduler, queue, queue-scraping(+-2), mailpit, db-ui (Adminer)
 Dockerfile
 ```

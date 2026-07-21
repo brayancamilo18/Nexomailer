@@ -109,3 +109,26 @@ services:
         limits:
           cpus: "0.25"
           memory: 128M
+
+  # UI de base de datos (SQLite). phpMyAdmin no soporta SQLite; Adminer sí.
+  # http://localhost:8089 → Sistema: SQLite 3 · Base de datos: /db/database.sqlite
+  # (usuario y contraseña vacíos). En servidor: http://IP:8089
+  db-ui:
+    image: adminer:4
+    depends_on:
+      - app
+    ports:
+      - "8089:8080"
+    volumes:
+      # Carpeta completa: hace falta para WAL (-wal / -shm) mientras la app escribe.
+      - ./database:/db
+    environment:
+      ADMINER_DESIGN: pepa-linha
+      ADMINER_DEFAULT_SERVER: ""
+    mem_limit: 128m
+    cpus: 0.25
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 128M
